@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import type { NextRequest } from "next/server"
 
 const SUBTITLE_DOWNLOADER_URL = "https://savesubs.com"
 
@@ -6,7 +6,7 @@ export const config = {
   runtime: "edge",
 }
 
-export async function getYoutubeSubtitleUrls(videoId: string) {
+async function getYoutubeSubtitleUrls(videoId: string) {
   const response = await fetch(SUBTITLE_DOWNLOADER_URL + "/action/extract", {
     method: "POST",
     body: JSON.stringify({
@@ -57,15 +57,14 @@ const find = (subtitleList: any[] = [], args: { [key: string]: any }) => {
   return subtitleList.find((item) => item[key] === args[key])
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { videoId } = req.query as { videoId: string }
+export default async function handler(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const videoId = searchParams.get("videoId")
 
   if (!videoId) {
-    res.status(400).json({ error: "videoId is required" })
-    return
+    return new Response(JSON.stringify({ msg: "videoId is required" }), {
+      status: 400,
+    })
   }
 
   try {
@@ -90,8 +89,12 @@ export default async function handler(
     //   },
     // ]
     const subtitles = await response.json()
-    res.status(200).json({ title, subtitlesArray: subtitles })
+    return new Response(JSON.stringify({ title, subtitlesArray: subtitles }), {
+      status: 200,
+    })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    return new Response(JSON.stringify({ msg: error.message }), {
+      status: 500,
+    })
   }
 }
