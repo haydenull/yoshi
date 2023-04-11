@@ -1,10 +1,10 @@
+export type Subtitle = { start: number; end: number; lines: string[] }
 export const fetchSubtitles = async (
   videoId: string
 ): Promise<{
   title: string
-  subtitlesArray: { start: number; end: number; lines: string[] }[]
+  subtitlesArray: Subtitle[]
 }> => {
-  console.log("[faiz:] === videoId", videoId)
   const response = await fetch(`/api/subtitles?videoId=${videoId}`)
 
   if (!response.ok) {
