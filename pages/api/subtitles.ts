@@ -2,6 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next"
 
 const SUBTITLE_DOWNLOADER_URL = "https://savesubs.com"
 
+export const config = {
+  runtime: "edge",
+}
+
 export async function getYoutubeSubtitleUrls(videoId: string) {
   const response = await fetch(SUBTITLE_DOWNLOADER_URL + "/action/extract", {
     method: "POST",
