@@ -17,6 +17,7 @@ export async function getYoutubeSubtitleUrls(videoId: string) {
       "X-Requested-With": "xmlhttprequest",
     },
   })
+  console.log("[faiz:] === response", response)
   const { response: json = {} } = await response.json()
   // {
   //   formats: [
