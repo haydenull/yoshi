@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 
 const getRef = (time: number) => `subtitle-${time}`
 
-const home = () => {
+const Home = () => {
   const [videoUrl, setVideoUrl] = useState<string>()
   const [goTime, setGoTime] = useState<string>()
   // https://www.youtube.com/watch?v=gSSsZReIFRk
@@ -120,4 +120,4 @@ const home = () => {
   )
 }
 
-export default home
+export default Home
