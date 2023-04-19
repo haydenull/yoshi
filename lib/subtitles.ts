@@ -17,9 +17,8 @@ export function secondsToHMS(seconds: number): string {
 
 export function hmsStringToSeconds(hms: string): number {
   if (hms.length !== 6) {
-    throw new Error(
-      "Invalid input format. The input should be a 6-digit string (e.g. 000102)."
-    )
+    // Fill up to six digits if it's less than six
+    hms = hms.padStart(6, "0")
   }
 
   const hours = parseInt(hms.slice(0, 2), 10)

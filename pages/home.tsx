@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react"
 import { useQuery } from "react-query"
 
 import { findClosestSubtitle, secondsToHMS } from "@/lib/subtitles"
+import { getYouTubeVideoId } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -14,8 +15,8 @@ const getRef = (time: number) => `subtitle-${time}`
 const Home = () => {
   const [videoUrl, setVideoUrl] = useState<string>()
   const [goTime, setGoTime] = useState<string>()
-  // https://www.youtube.com/watch?v=gSSsZReIFRk
-  const videoId = videoUrl?.split("v=")?.[1]
+
+  const videoId = getYouTubeVideoId(videoUrl)
   const { toast } = useToast()
   const [activeSubtitle, setActiveSubtitle] = useState<Subtitle>()
   const subtitleRefs = useRef<{ [key: string]: HTMLSpanElement | null }>({})
@@ -68,7 +69,7 @@ const Home = () => {
 
   return (
     <section>
-      <div className="w-full my-8">
+      <div className="my-8 w-full">
         <div className="flex w-full items-center justify-center space-x-2">
           <Input
             type="url"
@@ -93,11 +94,12 @@ const Home = () => {
               <div
                 key={subtitle.start}
                 className={clsx("my-2 flex px-1 py-1 rounded gap-2", {
-                  "bg-slate-300": activeSubtitle?.start === subtitle.start,
+                  "bg-slate-300 dark:bg-slate-700":
+                    activeSubtitle?.start === subtitle.start,
                 })}
                 ref={assignRef(getRef(subtitle.start))}
               >
-                <span className="flex justify-center items-center w-20 h-7 bg-blue-300 rounded">
+                <span className="flex h-7 w-20 items-center justify-center rounded bg-blue-300 dark:bg-blue-800">
                   {secondsToHMS(subtitle.start)}
                 </span>
                 <p>{subtitle.lines?.[0]}</p>
@@ -109,10 +111,16 @@ const Home = () => {
       <div className="fixed right-1 top-80">
         <Input
           type="number"
+          placeholder="time anchor"
+          maxLength={6}
           onChange={(e) => setGoTime(e.target.value)}
           className="w-24"
         />
-        <Button onClick={handleNavToSubtitle} className="w-24">
+        <Button
+          onClick={handleNavToSubtitle}
+          className="mt-2 w-24"
+          disabled={!Boolean(goTime)}
+        >
           Go
         </Button>
       </div>
